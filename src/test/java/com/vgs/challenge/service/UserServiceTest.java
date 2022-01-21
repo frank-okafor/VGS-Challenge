@@ -28,40 +28,41 @@ import com.vgs.challenge.utils.TestHelper;
 @ExtendWith(MockitoExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
 class UserServiceTest {
-    @Mock
-    private UserDetailsRepository userDetailsRepository;
+	@Mock
+	private UserDetailsRepository userDetailsRepository;
 
-    private UserService service;
+	private UserService service;
 
-    @BeforeEach
-    void setUp() throws Exception {
-	service = new UserService(userDetailsRepository);
-    }
+	@BeforeEach
+	void setUp() throws Exception {
+		service = new UserService(userDetailsRepository);
+	}
 
-    @Test
-    void testAddNewUser() {
-	UserDetails user = TestHelper.createUser();
-	when(userDetailsRepository.save(any(UserDetails.class))).thenReturn(user);
-	ServiceResponse response = service.addNewUser(TestHelper.userRequest());
-	assertThat(response.getMessage()).isEqualTo("User saved successfully");
-    }
+	@Test
+	void testAddNewUser() {
+		UserDetails user = TestHelper.createUser();
+		when(userDetailsRepository.save(any(UserDetails.class))).thenReturn(user);
+		ServiceResponse response = service.addNewUser(TestHelper.userRequest());
+		assertThat(response.getMessage()).isEqualTo("User saved successfully");
+	}
 
-    @Test
-    void testGetBirthdayMessage() {
-	UserDetails user = TestHelper.createUser();
-	when(userDetailsRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
-	String username = user.getUsername();
-	ServiceResponse response = service.getBirthdayMessage(username);
-	assertThat(response.getMessage()).isEqualTo("Hello, " + username + "! Your birthday is in " + 2 + " day(s)");
-    }
+	@Test
+	void testGetBirthdayMessage() {
+		UserDetails user = TestHelper.createUser();
+		when(userDetailsRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+		String username = user.getUsername();
+		ServiceResponse response = service.getBirthdayMessage(username);
+		assertThat(response.getMessage()).isEqualTo("Hello, " + username + "! Your birthday is in " + 2 + " day(s)");
+	}
 
-    @Test
-    void testUsernameExistError() {
-	UserRequestDto dto = TestHelper.userRequest();
-	when(userDetailsRepository.checkIfUsernameExists(anyString())).thenReturn(1);
-	assertThatThrownBy(() -> service.addNewUser(dto)).isInstanceOf(ServiceException.class)
-		.hasMessageContaining("username " + dto.getUsername() + " is used by another user");
-	verify(userDetailsRepository, never()).save(any());
-    }
+	@Test
+	void testUsernameExistError() {
+		UserDetails user = TestHelper.createUser();
+		UserRequestDto dto = TestHelper.userRequest();
+		when(userDetailsRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+		assertThatThrownBy(() -> service.addNewUser(dto)).isInstanceOf(ServiceException.class)
+				.hasMessageContaining("username " + dto.getUsername() + " is used by another user");
+		verify(userDetailsRepository, never()).save(any());
+	}
 
 }
