@@ -17,25 +17,25 @@ import com.vgs.challenge.utils.TestHelper;
 @TestPropertySource(locations = "classpath:test.properties")
 @TestInstance(Lifecycle.PER_CLASS)
 class UserDetailsRepositoryTest {
-    private @Autowired UserDetailsRepository userDetailsRepository;
+	private @Autowired UserDetailsRepository userDetailsRepository;
 
-    @BeforeEach
-    void setUp() throws Exception {
-	userDetailsRepository.deleteAll();
-    }
+	@BeforeEach
+	void setUp() throws Exception {
+		userDetailsRepository.deleteAll();
+	}
 
-    @Test
-    void testFindByUsername() {
-	UserDetails user = TestHelper.createUser();
-	userDetailsRepository.save(user);
-	assertThat(userDetailsRepository.findByUsername(user.getUsername()).isPresent()).isTrue();
-    }
+	@Test
+	void testFindByUsername() {
+		UserDetails user = TestHelper.createUser();
+		userDetailsRepository.save(user);
+		assertThat(userDetailsRepository.findByUsername(user.getUsername()).isPresent()).isTrue();
+	}
 
-    @Test
-    void testCheckIfUsernameExists() {
-	UserDetails user = TestHelper.createUser();
-	userDetailsRepository.save(user);
-	assertThat(userDetailsRepository.checkIfUsernameExists(user.getUsername())).isEqualTo(1);
-    }
+	@Test
+	void testCheckIfUsernameExists() {
+		UserDetails user = TestHelper.createUser();
+		userDetailsRepository.save(user);
+		assertThat(userDetailsRepository.findByUsername(user.getUsername())).isEqualTo(1);
+	}
 
 }
